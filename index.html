@@ -1,0 +1,523 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stock Market Research Pro Live</title>
+  <style>
+    :root{
+      --bg:#09111f;--bg2:#0f1c33;--card:rgba(16,28,52,.82);--line:rgba(255,255,255,.09);
+      --text:#eef4ff;--muted:#9db0d4;--accent:#6ee7ff;--accent2:#7c5cff;--good:#4ade80;--warn:#fbbf24;
+      --shadow:0 20px 60px rgba(0,0,0,.35);
+    }
+    *{box-sizing:border-box} html,body{margin:0;padding:0;background:radial-gradient(circle at top left,#1a2f68 0%,#0d1730 32%,#08101d 100%);color:var(--text);font-family:Inter,Segoe UI,Arial,sans-serif}
+    .wrap{max-width:1500px;margin:0 auto;padding:24px}
+    .hero{display:grid;grid-template-columns:1.25fr .95fr;gap:20px;margin-bottom:20px}
+    .glass{background:linear-gradient(180deg,rgba(28,46,86,.88),rgba(11,20,40,.82));backdrop-filter: blur(14px);border:1px solid var(--line);border-radius:28px;box-shadow:var(--shadow)}
+    .hero .left{padding:28px 30px}.hero .right{padding:24px}
+    h1{margin:0 0 10px;font-size:40px;line-height:1.05;font-weight:800;letter-spacing:-.03em}
+    .grad{background:linear-gradient(90deg,#fff 0%,#9de5ff 45%,#9a8cff 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+    .sub{color:var(--muted);font-size:15px;line-height:1.65;max-width:900px}
+    .chiprow{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+    .chip{padding:10px 14px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.05);color:#d6e2ff;font-size:13px;font-weight:700}
+    .statgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+    .stat{padding:18px;border-radius:22px;background:rgba(255,255,255,.04);border:1px solid var(--line)}
+    .stat .label{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.08em}.stat .value{font-size:28px;font-weight:800;margin-top:6px}
+
+    .main{display:grid;grid-template-columns:390px 1fr 320px;gap:18px}
+    .panel{padding:20px}
+    .panel h2{margin:0 0 16px;font-size:24px}
+    .sectiontitle{margin:0 0 14px;font-size:14px;color:#d6e2ff;font-weight:800;letter-spacing:.02em;text-transform:uppercase}
+    .field{margin-bottom:14px}
+    label{display:block;margin-bottom:7px;font-size:12px;font-weight:800;color:#c7d6f7;text-transform:uppercase;letter-spacing:.08em}
+    input,textarea,select{width:100%;padding:14px 15px;border-radius:16px;border:1px solid var(--line);background:rgba(255,255,255,.05);color:var(--text);font-size:14px;outline:none}
+    textarea{min-height:110px;resize:vertical}
+    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+    .toggle{display:flex;justify-content:space-between;align-items:center;padding:14px 15px;border-radius:18px;border:1px solid var(--line);background:rgba(255,255,255,.04);margin-bottom:10px}
+    .toggle small{color:var(--muted);display:block;margin-top:3px}
+    .switch{position:relative;width:58px;height:34px;flex:0 0 auto}
+    .switch input{display:none}.slider{position:absolute;inset:0;background:#31456f;border-radius:999px;transition:.25s}.slider:before{content:"";position:absolute;width:26px;height:26px;left:4px;top:4px;border-radius:50%;background:#fff;transition:.25s}
+    .switch input:checked + .slider{background:linear-gradient(90deg,var(--accent2),var(--accent))}.switch input:checked + .slider:before{transform:translateX(24px)}
+    .btnrow{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+    button{border:0;border-radius:18px;padding:14px 16px;font-size:14px;font-weight:800;cursor:pointer}
+    .primary{background:linear-gradient(90deg,var(--accent2),var(--accent));color:#07101f}.secondary{background:rgba(255,255,255,.06);border:1px solid var(--line);color:#ebf2ff}
+    .tabs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}.tab{padding:11px 15px;border-radius:999px;background:rgba(255,255,255,.05);border:1px solid var(--line);cursor:pointer;font-weight:800;color:#dbe7ff}.tab.active{background:linear-gradient(90deg,rgba(124,92,255,.32),rgba(110,231,255,.22));border-color:rgba(110,231,255,.36)}
+    .console{border-radius:24px;border:1px solid var(--line);background:rgba(4,10,20,.58);overflow:hidden}
+    .consolehead{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid var(--line)}
+    .consolehead .meta{color:var(--muted);font-size:13px}
+    .output{padding:20px;min-height:720px;max-height:720px;overflow:auto;white-space:pre-wrap;line-height:1.7;font-size:14px;color:#f5f8ff}
+    .preview-grid{display:grid;gap:14px}
+    .preview-card{border:1px solid var(--line);background:rgba(255,255,255,.04);border-radius:20px;padding:16px}
+    .preview-card h3{margin:0 0 8px;font-size:17px}.muted{color:var(--muted)}
+    .scorebox{padding:22px;border:1px solid var(--line);border-radius:24px;background:rgba(255,255,255,.04);margin-bottom:14px}
+    .score{font-size:64px;font-weight:900;line-height:1}.bar{height:12px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden;margin:12px 0 10px}.fill{height:100%;background:linear-gradient(90deg,#f59e0b,#facc15,#34d399,#22d3ee,#60a5fa)}
+    .mini{padding:14px 16px;border-radius:18px;border:1px solid var(--line);background:rgba(255,255,255,.04);margin-bottom:10px}
+    .mini strong{display:block;margin-bottom:6px}
+    .list{display:grid;gap:10px}.pill{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:12px 14px;border-radius:16px;background:rgba(255,255,255,.04);border:1px solid var(--line)}
+    .ok{color:var(--good)} .warn{color:var(--warn)}
+    .footer-note{padding:14px 18px;border-top:1px solid var(--line);color:var(--muted);font-size:12px}
+    .small{font-size:12px;color:var(--muted)}
+    .badge{display:inline-flex;align-items:center;gap:6px;padding:8px 10px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid var(--line);font-size:12px;font-weight:800}
+    @media (max-width:1200px){.main{grid-template-columns:1fr}.hero{grid-template-columns:1fr}.output{min-height:460px;max-height:none}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <div class="left glass">
+        <div class="badge">Live Adobe Research Engine</div>
+        <h1><span class="grad">Stock Market Research Pro</span><br>Adobe Stock 2026</h1>
+        <div class="sub">Web app riset pasar live untuk Adobe Stock dengan workflow cepat: riset niche → validasi pasar live → generate prompt enhanced → metadata SEO → export TXT/CSV. Mode SuperGrok otomatis membuat setiap prompt satu baris penuh dengan jarak antar prompt supaya mudah dibaca.</div>
+        <div class="chiprow">
+          <div class="chip">Live Search Validation</div>
+          <div class="chip">Anti-Similar Engine</div>
+          <div class="chip">10–1000 Prompt</div>
+          <div class="chip">White Background Mode</div>
+          <div class="chip">TXT / CSV Export</div>
+        </div>
+      </div>
+      <div class="right glass">
+        <div class="statgrid">
+          <div class="stat"><div class="label">Riset mode</div><div class="value">LIVE</div></div>
+          <div class="stat"><div class="label">Prompt capacity</div><div class="value">1000</div></div>
+          <div class="stat"><div class="label">SuperGrok</div><div class="value">READY</div></div>
+          <div class="stat"><div class="label">Deploy target</div><div class="value">Vercel</div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="main">
+      <aside class="glass panel">
+        <h2>Kontrol Generator</h2>
+        <div class="field">
+          <label>Niche utama / ide awal</label>
+          <textarea id="seed" placeholder="contoh: macro miniature video, isometric ai office, luxury perfume bottle">macro miniature video</textarea>
+        </div>
+        <div class="grid2">
+          <div class="field">
+            <label>Jenis konten</label>
+            <select id="contentType">
+              <option value="video">Video</option>
+              <option value="vector">Vector</option>
+              <option value="photo">Photo</option>
+              <option value="illustration">Illustration</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Jumlah hasil</label>
+            <select id="count">
+              <option>10</option><option>25</option><option>50</option><option selected>100</option><option>250</option><option>500</option><option>1000</option>
+            </select>
+          </div>
+        </div>
+        <div class="grid2">
+          <div class="field">
+            <label>Background</label>
+            <select id="background">
+              <option value="white">White Background</option>
+              <option value="transparent">Transparent</option>
+              <option value="environment" selected>Environment Scene</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Output mode</label>
+            <select id="outputMode">
+              <option value="full" selected>Full Pack</option>
+              <option value="prompt">Prompt Only</option>
+              <option value="title">Title Only</option>
+              <option value="keyword">Keyword Only</option>
+            </select>
+          </div>
+        </div>
+        <div class="grid2">
+          <div class="field">
+            <label>Gaya visual</label>
+            <select id="visualStyle">
+              <option value="auto" selected>Auto by content</option>
+              <option value="realistic">Realistic</option>
+              <option value="isometric">Isometric</option>
+              <option value="minimal">Minimal Clean</option>
+              <option value="luxury">Luxury Commercial</option>
+              <option value="cinematic">Cinematic</option>
+              <option value="macro">Macro Detail</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Locale riset</label>
+            <select id="locale">
+              <option value="en_US" selected>en_US</option>
+              <option value="id_ID">id_ID</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="toggle">
+          <div><strong>SuperGrok Ready</strong><small>Setiap prompt 1 baris + 1 baris kosong</small></div>
+          <label class="switch"><input id="supergrok" type="checkbox" checked><span class="slider"></span></label>
+        </div>
+        <div class="toggle">
+          <div><strong>Enhanced Prompt</strong><small>Tambah detail komersial otomatis</small></div>
+          <label class="switch"><input id="enhanced" type="checkbox" checked><span class="slider"></span></label>
+        </div>
+        <div class="toggle">
+          <div><strong>Live market validation</strong><small>Pakai Adobe Search API untuk cek niche</small></div>
+          <label class="switch"><input id="liveMode" type="checkbox" checked><span class="slider"></span></label>
+        </div>
+        <div class="toggle">
+          <div><strong>Background putih ketat</strong><small>Pakai isolated style saat relevan</small></div>
+          <label class="switch"><input id="strictWhite" type="checkbox"><span class="slider"></span></label>
+        </div>
+
+        <div class="btnrow">
+          <button id="generateBtn" class="primary">Generate Sekarang</button>
+          <button id="downloadTxt" class="secondary">Download TXT</button>
+          <button id="downloadCsv" class="secondary">Download CSV</button>
+          <button id="copyBtn" class="secondary">Copy Output</button>
+        </div>
+        <p class="small" style="margin-top:12px">App ini siap deploy ke Vercel. Agar live, isi environment variable <strong>ADOBE_STOCK_API_KEY</strong> dan <strong>ADOBE_STOCK_PRODUCT</strong>.</p>
+      </aside>
+
+      <main class="glass panel">
+        <h2>Generator Output Premium</h2>
+        <div class="tabs">
+          <div class="tab active" data-tab="preview">Preview</div>
+          <div class="tab" data-tab="prompt">Prompt</div>
+          <div class="tab" data-tab="title">Title</div>
+          <div class="tab" data-tab="keyword">Keyword</div>
+          <div class="tab" data-tab="csv">CSV</div>
+        </div>
+        <div class="console">
+          <div class="consolehead">
+            <div>
+              <strong id="consoleTitle">Preview Hasil Generate</strong>
+              <div class="meta" id="consoleMeta">Belum ada hasil.</div>
+            </div>
+            <div class="badge" id="formatBadge">Format: SuperGrok Single Line</div>
+          </div>
+          <div class="output" id="output">Klik "Generate Sekarang" untuk mulai riset pasar live dan membuat prompt.</div>
+          <div class="footer-note">Mode live memvalidasi seed niche dengan Adobe Stock Search. Untuk jumlah prompt besar, app akan memperluas tema secara internal setelah seed terbaik lolos validasi live.</div>
+        </div>
+      </main>
+
+      <aside class="glass panel">
+        <h2>Insight Market</h2>
+        <div class="scorebox">
+          <div class="muted">Market Score</div>
+          <div class="score" id="marketScore">0</div>
+          <div class="bar"><div class="fill" id="scoreFill" style="width:0%"></div></div>
+          <div class="muted" id="scoreExplain">Menunggu riset live.</div>
+        </div>
+        <div class="mini">
+          <strong>Research Confidence</strong>
+          <div id="confidence" class="ok">Belum ada data</div>
+        </div>
+        <div class="mini">
+          <strong>Live validation</strong>
+          <div id="liveInfo" class="muted">Belum dijalankan</div>
+        </div>
+        <div class="mini">
+          <strong>Rekomendasi produksi</strong>
+          <div id="recommendation" class="muted">Gunakan niche spesifik, clean metadata, dan variasi komposisi.</div>
+        </div>
+        <div class="sectiontitle" style="margin-top:18px">Tema terbaik</div>
+        <div class="list" id="topThemes"></div>
+      </aside>
+    </section>
+  </div>
+
+<script>
+const state = { results: [], themes: [], activeTab: 'preview', csv: '' };
+const $ = sel => document.querySelector(sel);
+const outputEl = $('#output');
+const topThemesEl = $('#topThemes');
+
+const BANK = {
+  themeSuffix: {
+    video: ['cinematic progression', 'slow motion detail', 'natural motion clarity', 'product reveal motion', 'loop friendly action', 'clean commercial action', 'editorial style motion', 'high production stock scene'],
+    vector: ['clean infographic concept', 'premium microstock composition', 'eps ready layout', 'isolated commercial set', 'editorial style iconography', 'high detail vector scene', 'modern flat branding visual', 'scalable stock illustration'],
+    photo: ['high end product shoot', 'commercial studio setup', 'premium stock photo scene', 'clean advertising composition', 'editorial product realism', 'high detail commercial visual', 'brand ready hero image', 'licensed friendly setup'],
+    illustration: ['premium digital artwork', 'clean editorial illustration', 'commercial visual concept', 'high detail illustration scene', 'isolated premium artwork', 'modern storytelling visual', 'brand ready illustration', 'stock ready artwork']
+  },
+  style: {
+    video: ['realistic', 'cinematic', 'macro', 'luxury'],
+    vector: ['isometric', 'minimal', 'luxury'],
+    photo: ['realistic', 'luxury', 'macro', 'minimal'],
+    illustration: ['isometric', 'minimal', 'luxury', 'cinematic']
+  },
+  actions: ['showing', 'capturing', 'highlighting', 'presenting', 'featuring', 'revealing', 'showcasing', 'focusing on', 'emphasizing'],
+  camera: ['top angle composition', 'front view composition', 'three quarter angle', 'close up framing', 'macro close up', 'wide cinematic framing', 'centered hero composition', 'clean studio framing'],
+  lighting: ['soft daylight lighting', 'golden sunrise light', 'clean studio lighting', 'premium cinematic contrast', 'bright diffused light', 'natural ambient light', 'soft luxury glow', 'high clarity exposure'],
+  qualities: ['no noise', 'no artifacts', 'sharp details', 'clean composition', 'commercial ready', 'licensing friendly composition', 'high detail', 'premium stock quality'],
+  videoMotion: ['smooth cinematic tracking shot', 'gentle orbit camera movement', 'stable locked composition', 'subtle push in motion', 'slow motion close up', 'natural handheld realism'],
+  nicheExpansions: ['commercial', 'premium', 'modern', 'minimal', 'editorial', 'clean', 'professional', 'trending', 'marketable', 'high demand']
+};
+
+function safeFilename(name){return name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,80)||'export'}
+function titleCase(s){return s.replace(/\w\S*/g,w=>w.charAt(0).toUpperCase()+w.slice(1).toLowerCase())}
+function cleanLine(s){return s.replace(/[\n\r\t]+/g,' ').replace(/\s{2,}/g,' ').replace(/[•▪■]+/g,' ').trim()}
+function escapeCsv(v){const s=String(v??'');return '"'+s.replace(/"/g,'""')+'"'}
+function uniq(arr){return [...new Set(arr)]}
+function hashSeed(str){let h=0;for(let i=0;i<str.length;i++) h=(h*31+str.charCodeAt(i))>>>0;return h}
+function pick(arr, i){return arr[i % arr.length]}
+function mixWord(base, i){const words=base.split(/[,\-\/]+|\s+/).filter(Boolean); const extra = pick(BANK.nicheExpansions, i); return uniq([...words, extra]).join(' ')}
+
+function buildBackgroundText(bg, type, strictWhite){
+  if(bg==='white') return strictWhite ? 'isolated on pure white background' : 'clean white background';
+  if(bg==='transparent') return type==='vector' ? 'transparent background friendly layout' : 'isolated subject with transparent background ready composition';
+  return 'natural environment scene';
+}
+
+function buildThemeCandidates(seed, type){
+  const base = cleanLine(seed.toLowerCase());
+  const chunks = [base];
+  const core = BANK.themeSuffix[type] || BANK.themeSuffix.video;
+  for(let i=0;i<core.length;i++) chunks.push(`${base} ${core[i]}`);
+  for(let i=0;i<12;i++) chunks.push(`${mixWord(base, i)} ${pick(core, i)}`);
+  const words = base.split(/\s+/).filter(w=>w.length>2);
+  if(words.length>1){
+    for(let i=0;i<words.length;i++) chunks.push(`${words[i]} ${base} ${pick(core, i+3)}`);
+  }
+  return uniq(chunks).slice(0, 28);
+}
+
+async function liveResearch(keyword, contentType, locale, isolated){
+  const qs = new URLSearchParams({ keyword, contentType, locale, isolated: isolated ? '1' : '0' });
+  const res = await fetch(`/api/research?${qs.toString()}`);
+  if(!res.ok){
+    let msg = 'Gagal riset live';
+    try { const data = await res.json(); if(data.error) msg = data.error; } catch {}
+    throw new Error(msg);
+  }
+  return res.json();
+}
+
+function scoreFromLive(nb){
+  if(nb <= 0) return 18;
+  if(nb < 100) return 48;
+  if(nb < 1000) return 78;
+  if(nb < 10000) return 92;
+  if(nb < 50000) return 82;
+  if(nb < 150000) return 68;
+  return 54;
+}
+
+function confidenceLabel(liveCount, totalThemes){
+  if(liveCount >= 20) return 'Tinggi';
+  if(liveCount >= 10) return 'Menengah';
+  if(liveCount >= 5) return 'Cukup';
+  return totalThemes ? 'Dasar' : 'Belum ada';
+}
+
+function styleFor(type, requested, idx){
+  if(requested && requested !== 'auto') return requested;
+  const list = BANK.style[type] || BANK.style.video;
+  return pick(list, idx);
+}
+
+function buildPrompt(theme, opts, idx){
+  const style = styleFor(opts.type, opts.visualStyle, idx);
+  const bgText = buildBackgroundText(opts.background, opts.type, opts.strictWhite);
+  const qualities = uniq([pick(BANK.qualities, idx), pick(BANK.qualities, idx+2), pick(BANK.qualities, idx+4), pick(BANK.qualities, idx+6)]).join(', ');
+  const camera = pick(BANK.camera, idx);
+  const light = pick(BANK.lighting, idx+1);
+  const action = pick(BANK.actions, idx+2);
+  if(opts.type === 'video'){
+    const motion = pick(BANK.videoMotion, idx+3);
+    return cleanLine(`realistic ${opts.type} of ${theme}, ${action} ${pick(BANK.themeSuffix.video, idx)}, ${motion}, ${light}, ${camera}, ${bgText}, realistic context, ${qualities}${opts.enhanced ? ', premium cinematic stock footage quality, strong commercial appeal, optimized for Adobe Stock' : ''}`);
+  }
+  if(opts.type === 'vector'){
+    return cleanLine(`ultra clean ${style} vector illustration of ${theme}, ${action} ${pick(BANK.themeSuffix.vector, idx)}, ${camera}, ${light}, ${bgText}, crisp shapes, scalable EPS ready design, ${qualities}${opts.enhanced ? ', premium microstock quality, highly detailed, optimized for Adobe Stock' : ''}`);
+  }
+  if(opts.type === 'illustration'){
+    return cleanLine(`premium ${style} illustration of ${theme}, ${action} ${pick(BANK.themeSuffix.illustration, idx)}, ${camera}, ${light}, ${bgText}, polished artwork, ${qualities}${opts.enhanced ? ', commercial ready, high detail, optimized for Adobe Stock' : ''}`);
+  }
+  return cleanLine(`professional ${style} photo of ${theme}, ${action} ${pick(BANK.themeSuffix.photo, idx)}, ${camera}, ${light}, ${bgText}, authentic realism, ${qualities}${opts.enhanced ? ', high end stock image quality, optimized for Adobe Stock' : ''}`);
+}
+
+function buildTitle(theme, opts, idx){
+  const bg = opts.background==='white' ? 'on White Background' : opts.background==='transparent' ? 'Transparent Ready' : 'in Clean Environment';
+  const prefix = opts.type==='video' ? 'Realistic Video of' : opts.type==='vector' ? 'Premium Vector of' : opts.type==='illustration' ? 'Commercial Illustration of' : 'Professional Photo of';
+  return cleanLine(`${prefix} ${titleCase(theme)} ${bg}`);
+}
+
+function buildKeywords(theme, opts, idx){
+  const words = theme.toLowerCase().split(/[^a-z0-9]+/).filter(w=>w.length>2);
+  const common = [opts.type, opts.background==='white'?'white background':opts.background, 'adobe stock', 'commercial', 'premium', 'marketable', 'trending', 'high detail', 'clean composition'];
+  const extras = [styleFor(opts.type, opts.visualStyle, idx), pick(BANK.themeSuffix[opts.type]||BANK.themeSuffix.video, idx), pick(BANK.lighting, idx), pick(BANK.camera, idx)];
+  return uniq([...words, ...common, ...extras.join(' ').split(/[^a-z0-9]+/).filter(w=>w.length>2)]).slice(0, 35).join(', ');
+}
+
+function generateFromThemes(themes, opts, count){
+  const out = [];
+  const usedTitles = new Set();
+  const usedPrompts = new Set();
+  const maxIter = count * 8;
+  for(let i=0; i<maxIter && out.length<count; i++){
+    const themeObj = themes[i % themes.length] || {keyword: opts.seed, nb_results: 0, score: 50};
+    const decorated = `${themeObj.keyword} ${pick(BANK.themeSuffix[opts.type]||BANK.themeSuffix.video, i)}`;
+    const prompt = buildPrompt(decorated, opts, i);
+    const title = buildTitle(decorated, opts, i);
+    if(usedPrompts.has(prompt) || usedTitles.has(title)) continue;
+    usedPrompts.add(prompt); usedTitles.add(title);
+    out.push({
+      liveKeyword: themeObj.keyword,
+      liveResults: themeObj.nb_results || 0,
+      marketScore: Math.max(35, Math.min(98, Math.round((themeObj.score || 50) * 0.65 + ((i%11)+20) * 0.35))),
+      title,
+      prompt,
+      keywords: buildKeywords(decorated, opts, i)
+    });
+  }
+  return out;
+}
+
+function formatOutput(mode, items, supergrok){
+  if(!items.length) return 'Belum ada hasil.';
+  if(mode==='title') return items.map(x=>x.title).join(supergrok ? '\n\n' : '\n');
+  if(mode==='keyword') return items.map(x=>x.keywords).join(supergrok ? '\n\n' : '\n');
+  if(mode==='prompt') return items.map(x=>x.prompt).join(supergrok ? '\n\n' : '\n');
+  return items.map((x,i)=>`[${i+1}]\nTitle: ${x.title}\nKeyword: ${x.keywords}\nPrompt: ${x.prompt}\nMarket Score: ${x.marketScore}`).join('\n\n');
+}
+
+function renderPreview(items){
+  return items.slice(0, 18).map((x,i)=>`<div class="preview-card"><h3>${i+1}. ${x.title}</h3><div class="muted">Live keyword: ${x.liveKeyword} • Adobe results: ${x.liveResults.toLocaleString('en-US')} • Score: ${x.marketScore}</div><p style="margin:10px 0 8px">${x.prompt}</p><div class="small">${x.keywords}</div></div>`).join('');
+}
+
+function buildCsv(items){
+  const rows = ['Title,Keywords,Prompt,MarketScore,LiveKeyword,AdobeResultCount'];
+  items.forEach(x=>rows.push([escapeCsv(x.title), escapeCsv(x.keywords), escapeCsv(x.prompt), x.marketScore, escapeCsv(x.liveKeyword), x.liveResults].join(',')));
+  return rows.join('\n');
+}
+
+function setTab(name){
+  state.activeTab = name;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active', t.dataset.tab===name));
+  const supergrok = $('#supergrok').checked;
+  if(name==='preview'){
+    $('#consoleTitle').textContent = 'Preview Hasil Generate';
+    $('#consoleMeta').textContent = `${state.results.length} hasil • live validated themes: ${state.themes.length}`;
+    outputEl.innerHTML = `<div class="preview-grid">${renderPreview(state.results)}</div>`;
+  } else if(name==='prompt') {
+    $('#consoleTitle').textContent = 'Prompt Export';
+    $('#consoleMeta').textContent = `${state.results.length} prompt siap export`;
+    outputEl.textContent = formatOutput('prompt', state.results, supergrok);
+  } else if(name==='title') {
+    $('#consoleTitle').textContent = 'Title Export';
+    $('#consoleMeta').textContent = `${state.results.length} judul siap export`;
+    outputEl.textContent = formatOutput('title', state.results, supergrok);
+  } else if(name==='keyword') {
+    $('#consoleTitle').textContent = 'Keyword Export';
+    $('#consoleMeta').textContent = `${state.results.length} keyword set siap export`;
+    outputEl.textContent = formatOutput('keyword', state.results, supergrok);
+  } else {
+    $('#consoleTitle').textContent = 'CSV Export';
+    $('#consoleMeta').textContent = `${state.results.length} row siap import`;
+    outputEl.textContent = state.csv || 'Belum ada CSV.';
+  }
+  $('#formatBadge').textContent = supergrok ? 'Format: SuperGrok Single Line' : 'Format: Standard';
+}
+
+async function generate(){
+  const seed = cleanLine($('#seed').value);
+  if(!seed){ alert('Isi niche utama dulu'); return; }
+  const opts = {
+    seed,
+    type: $('#contentType').value,
+    count: Number($('#count').value),
+    background: $('#background').value,
+    outputMode: $('#outputMode').value,
+    visualStyle: $('#visualStyle').value,
+    locale: $('#locale').value,
+    supergrok: $('#supergrok').checked,
+    enhanced: $('#enhanced').checked,
+    liveMode: $('#liveMode').checked,
+    strictWhite: $('#strictWhite').checked || $('#background').value==='white'
+  };
+
+  $('#generateBtn').disabled = true;
+  $('#generateBtn').textContent = 'Sedang riset...';
+  outputEl.textContent = 'Menjalankan riset pasar live...';
+  topThemesEl.innerHTML = '';
+
+  try {
+    let themes = buildThemeCandidates(seed, opts.type).map(keyword => ({ keyword, nb_results: 0, score: 50, thumbs: [] }));
+    if(opts.liveMode){
+      const isolated = opts.strictWhite || opts.background === 'white';
+      const limited = themes.slice(0, 20);
+      const liveData = [];
+      for(let i=0;i<limited.length;i++){
+        $('#consoleMeta').textContent = `Validasi live ${i+1}/${limited.length}...`;
+        try {
+          const data = await liveResearch(limited[i].keyword, opts.type, opts.locale, isolated);
+          liveData.push({
+            keyword: limited[i].keyword,
+            nb_results: data.nb_results || 0,
+            score: scoreFromLive(data.nb_results || 0),
+            thumbs: data.files || []
+          });
+        } catch(e) {
+          liveData.push({ keyword: limited[i].keyword, nb_results: 0, score: 22, thumbs: [], error: e.message });
+        }
+      }
+      themes = liveData.sort((a,b)=>b.score-a.score || a.nb_results-b.nb_results);
+      const avg = themes.reduce((s,x)=>s+x.score,0)/(themes.length||1);
+      const top = themes[0];
+      $('#marketScore').textContent = String(Math.round(avg));
+      $('#scoreFill').style.width = `${Math.round(avg)}%`;
+      $('#scoreExplain').textContent = top ? `Tema live terbaik: ${top.keyword} • ${top.nb_results.toLocaleString('en-US')} hasil di Adobe.` : 'Live score tidak tersedia.';
+      $('#confidence').textContent = confidenceLabel(themes.length, themes.length);
+      $('#liveInfo').textContent = `${themes.length} seed niche divalidasi live.`;
+      $('#recommendation').textContent = top && top.nb_results > 50000 ? 'Kompetisi tinggi. Gunakan niche lebih spesifik, variasi sudut, dan kata kunci long-tail.' : 'Niche cukup sehat. Lanjutkan dengan variasi komposisi dan metadata spesifik.';
+      topThemesEl.innerHTML = themes.slice(0,6).map(t=>`<div class="pill"><span>${t.keyword}</span><strong class="${t.score>=80?'ok':t.score>=60?'warn':''}">${t.score}/100</strong></div>`).join('');
+    } else {
+      $('#marketScore').textContent = '70';
+      $('#scoreFill').style.width = '70%';
+      $('#scoreExplain').textContent = 'Live mode dimatikan. Score memakai estimasi internal.';
+      $('#confidence').textContent = 'Internal only';
+      $('#liveInfo').textContent = 'Live validation off';
+      themes = themes.map((x,i)=>({...x, score: 70-(i%8)}));
+      topThemesEl.innerHTML = themes.slice(0,6).map(t=>`<div class="pill"><span>${t.keyword}</span><strong>est.</strong></div>`).join('');
+    }
+
+    state.themes = themes;
+    state.results = generateFromThemes(themes.length?themes:[{keyword:seed, nb_results:0, score:65}], opts, opts.count);
+    state.csv = buildCsv(state.results);
+    setTab(state.activeTab);
+    if(opts.outputMode==='prompt') setTab('prompt');
+    if(opts.outputMode==='title') setTab('title');
+    if(opts.outputMode==='keyword') setTab('keyword');
+  } catch(err){
+    outputEl.textContent = `Error: ${err.message}`;
+    $('#scoreExplain').textContent = err.message;
+  } finally {
+    $('#generateBtn').disabled = false;
+    $('#generateBtn').textContent = 'Generate Sekarang';
+  }
+}
+
+function downloadFile(name, content, type){
+  const blob = new Blob([content], {type});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href=url; a.download=name; a.click();
+  URL.revokeObjectURL(url);
+}
+
+document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>setTab(t.dataset.tab)));
+$('#generateBtn').addEventListener('click', generate);
+$('#downloadTxt').addEventListener('click', ()=>{
+  const mode = state.activeTab==='csv' ? 'prompt' : state.activeTab;
+  const content = state.activeTab==='csv' ? state.csv : formatOutput(mode==='preview'?$('#outputMode').value:mode, state.results, $('#supergrok').checked);
+  downloadFile(`${safeFilename($('#seed').value)}-${mode||'full'}.txt`, content, 'text/plain;charset=utf-8');
+});
+$('#downloadCsv').addEventListener('click', ()=> downloadFile(`${safeFilename($('#seed').value)}-adobe-stock.csv`, state.csv || buildCsv(state.results), 'text/csv;charset=utf-8'));
+$('#copyBtn').addEventListener('click', async ()=>{
+  const text = state.activeTab==='csv' ? state.csv : (outputEl.textContent || '');
+  await navigator.clipboard.writeText(text);
+  $('#copyBtn').textContent = 'Tersalin'; setTimeout(()=>$('#copyBtn').textContent='Copy Output',1200);
+});
+$('#supergrok').addEventListener('change', ()=> setTab(state.activeTab));
+setTab('preview');
+</script>
+</body>
+</html>
